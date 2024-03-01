@@ -1,21 +1,22 @@
 .main {
   display: flex;
   flex-direction: column;
-  min-height: 90vh;
+  min-height: calc(100vh - 11vh);
 }
 
 .drawer .cards {
-  display: grid;
-  grid-template-columns: repeat(5, 150px);
-  gap: 10px;
+  display: flex;
+  overflow-x: scroll;
+  gap: 20px;
 }
-
 
 .header {
   display: flex;
   justify-content: space-between;
   line-height: 2.6;
-  max-height: 5vh;
+  min-height: 5vh;
+
+  border-bottom: 2px solid #323232;
 }
 
 .info {
@@ -26,6 +27,8 @@
   display: flex;
   border: 3px solid var(--border);
   border-radius: 15px;
+
+  color: var(--foreground);
 }
 
 .menu {
@@ -33,13 +36,35 @@
   gap: 5px;
 }
 
-.menu button {
-  font-size: 16px;
+.menu .button {
+  width: 75px;
+
+  font-size: 1.3pc;
+
+  background-color: var(--button-bg);
+  color: var(--button-fg);
+
+  border-radius: 15px;
+
+  border: 1px double #d9042793;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.menu .button:hover {
+  background-color: var(--button-fg);
+  color: var(--button-bg);
+
+  transition: background 500ms;
 }
 
 .logo {
   display: flex;
   gap: 10px;
+
+  color: var(--foreground);
 }
 
 .logo h1 {
@@ -47,9 +72,12 @@
 }
 
 .footer {
-  max-height: 5vh;
+  min-height: 5vh;
+  width: 100vw;
+  background-color: white;
 }
 
 .title {
-  color: #EDF2F4;
+  color: var(--foreground);
+  border-bottom: 4px double #EDF2F4;
 }

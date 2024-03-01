@@ -1,7 +1,10 @@
 :root {
-  --foreground: #F8F9FA;
-  --background: #343A40;
-  --border: #D90429;
+  --foreground: #ECEFF4;
+  --background: #212529;
+  --border: #d9042793;
+
+  --button-bg: #DEE2E6;
+  --button-fg: #212529;
 }
 
 * {
@@ -14,4 +17,54 @@ html,
 body {
   background-color: var(--background);
   color: var(--foreground);
+
+}
+
+/* Custom Scroll bar */
+
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+::-webkit-scrollbar:active {
+  width: 20px;
+  height: 10px;
+}
+
+::-webkit-scrollbar-button {
+  width: 0px;
+  height: 0px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #495057;
+  border: 0px solid transparent;
+  border-radius: 0px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #495057;
+}
+
+::-webkit-scrollbar-track:hover {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb:active {
+  background: #ADB5BD;
+}
+
+::-webkit-scrollbar-track:active {
+  background: transparent;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+  border: 0px none transparent;
+  border-radius: 0px;
+}
+
+::-webkit-scrollbar-corner {
+  background: transparent;
 }

@@ -16,10 +16,7 @@ class _MapPageState extends State<MapPage> {
     return Scaffold(
       body: FlutterMap(
         options: MapOptions(
-            initialCenter: LatLng(-23.533773, -46.625290),
-            initialZoom: 12,
-            maxZoom: 15,
-            minZoom: 4),
+            initialCenter: LatLng(-23.533773, -46.625290),),
         children: [
           TileLayer(
             urlTemplate: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',

@@ -34,7 +34,7 @@ jobs:
         run: mv build/app/outputs/flutter-apk/app-release.apk build/app/outputs/flutter-apk/ARGUS.apk
         
       - name: Archive artifacts
-      - uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v4
         with:
           name: ARGUS
           path: build/app/outputs/flutter-apk/ARGUS.apk

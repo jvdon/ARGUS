@@ -29,9 +29,13 @@ jobs:
         run: flutter analyze --no-fatal-infos --no-fatal-warnings
       - name: Build APK
         run: flutter build apk --release
+
+      - name: Rename File
+        run: mv build/app/outputs/flutter-apk/app-release.apk build/app/outputs/flutter-apk/ARGUS.apk
         
       - name: Archive artifacts
         uses: actions/upload-artifact@v2
         with:
-          name: app-release
-          path: build/app/outputs/flutter-apk/app-release.apk
+          name: ARGUS
+          path: build/app/outputs/flutter-apk/ARGUS.apk
+          compression-level: 0

@@ -1,3 +1,4 @@
+import 'package:ARGUS/pages/logout_page.dart';
 import 'package:ARGUS/pages/map_page.dart';
 import 'package:ARGUS/pages/report_page.dart';
 import 'package:ARGUS/utils.dart';
@@ -12,10 +13,7 @@ class MainPage extends StatefulWidget {
 
 class _MainPageState extends State<MainPage> {
   int currId = 0;
-  List<Widget> pages = [
-    MapPage(),
-    ReportPage()
-  ];
+  List<Widget> pages = [const MapPage(), const ReportPage(), const LogoutPage()];
 
   @override
   Widget build(BuildContext context) {
@@ -26,9 +24,15 @@ class _MainPageState extends State<MainPage> {
         backgroundColor: Colors.black.withAlpha(10),
         currentIndex: currId,
         items: [
-          BottomNavigationBarItem(icon: Icon(Icons.map_sharp, color: palette["green2"]), label: "Mapa"),
           BottomNavigationBarItem(
-              icon: Icon(Icons.add_a_photo_outlined, color: palette["green2"]), label: "Report")
+              icon: Icon(Icons.map_sharp, color: palette["green2"]),
+              label: "Mapa"),
+          BottomNavigationBarItem(
+              icon: Icon(Icons.add_a_photo_outlined, color: palette["green2"]),
+              label: "Report"),
+          BottomNavigationBarItem(
+              icon: Icon(Icons.logout, color: palette["green2"]),
+              label: "Logout"),
         ],
         onTap: (value) {
           setState(() {
@@ -39,4 +43,3 @@ class _MainPageState extends State<MainPage> {
     );
   }
 }
-

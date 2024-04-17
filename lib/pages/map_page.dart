@@ -1,3 +1,5 @@
+import 'package:ARGUS/models/report.dart';
+import 'package:ARGUS/repos/report_repo.dart';
 import 'package:ARGUS/utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
@@ -14,90 +16,83 @@ class _MapPageState extends State<MapPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: FlutterMap(
-        options: MapOptions(
-            initialCenter: LatLng(-23.533773, -46.625290),),
-        children: [
-          TileLayer(
-            urlTemplate: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
-            tileBuilder: _darkModeTileBuilder,
-            userAgentPackageName: 'com.zeyk.Gs',
-          ),
-          MarkerLayer(
-            markers: [
-              Marker(
-                  point: LatLng(-23.534331196, -46.634497462),
-                  child: GestureDetector(
-                    onTap: () {
-                      showDialog(
-                        context: context,
-                        builder: (context) {
-                          return Dialog(
-                            child: Container(
-                              width: 300,
-                              height: 300,
-                              child: Column(
-                                children: [
-                                  Expanded(
-                                    child: GridView(
-                                      gridDelegate:
-                                          const SliverGridDelegateWithFixedCrossAxisCount(
-                                              crossAxisCount: 3,
-                                              mainAxisSpacing: 15,
-                                              crossAxisSpacing: 15),
-                                      children: List.generate(
-                                        9,
-                                        (index) => Image.asset(
-                                            "assets/images/ARGUS.png"),
+        body: FutureBuilder<List<Trash>>(
+      future: ReportRepo().getReports(),
+      builder: (context, snapshot) {
+        switch (snapshot.connectionState) {
+          case ConnectionState.waiting:
+            return const Center(
+              child: Column(
+                children: [
+                  CircularProgressIndicator(),
+                  Text("Waiting on gps position")
+                ],
+              ),
+            );
+          case ConnectionState.done:
+            List<Trash> trashs = snapshot.data!;
+            return FlutterMap(
+              options: const MapOptions(
+                initialCenter: LatLng(37.4219983, -122.084),
+              ),
+              children: [
+                TileLayer(
+                  urlTemplate: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
+                  tileBuilder: _darkModeTileBuilder,
+                  userAgentPackageName: 'com.zeyk.Gs',
+                ),
+                MarkerLayer(
+                  markers: trashs
+                      .map(
+                        (e) => Marker(
+                          point: LatLng(e.lat, e.lng),
+                          child: GestureDetector(
+                            onTap: () {
+                              showDialog(
+                                context: context,
+                                builder: (context) {
+                                  return Dialog(
+                                    child: SizedBox(
+                                      width: 300,
+                                      height: 300,
+                                      child: Column(
+                                        children: [
+                                          Expanded(
+                                            child: Image.network(
+                                                "$baseUrl/${e.image_url!}"),
+                                          ),
+                                          Text(e.toString())
+                                        ],
                                       ),
                                     ),
-                                  ),
-                                  Text("LAT LONG")
-                                ],
-                              ),
+                                  );
+                                },
+                              );
+                            },
+                            child: Icon(
+                              Icons.location_on,
+                              size: 32,
+                              color: palette["green2"],
                             ),
-                          );
-                        },
-                      );
-                    },
-                    child: Icon(
-                      Icons.location_on,
-                      size: 32,
-                      color: palette["green2"],
-                    ),
-                  )),
-              Marker(
-                  point: LatLng(-20.534331196, -40.634497462),
-                  child: GestureDetector(
-                    child: Icon(
-                      Icons.location_on,
-                      size: 32,
-                      color: palette["green2"],
-                    ),
-                  )),
-              Marker(
-                  point: LatLng(-32.534331196, -50.634497462),
-                  child: GestureDetector(
-                    child: Icon(
-                      Icons.location_on,
-                      size: 32,
-                      color: palette["green2"],
-                    ),
-                  )),
-              Marker(
-                  point: LatLng(-18.534331196, -64.634497462),
-                  child: GestureDetector(
-                    child: Icon(
-                      Icons.location_on,
-                      size: 32,
-                      color: palette["green2"],
-                    ),
-                  ))
-            ],
-          ),
-        ],
-      ),
-    );
+                          ),
+                        ),
+                      )
+                      .toList(),
+                ),
+              ],
+            );
+          default:
+            return const Center(
+              child: Column(
+                children: [
+                  Icon(Icons.question_mark),
+                  Text("Oops! Something went wrong!")
+                ],
+              ),
+            );
+        }
+      },
+    ));
   }
 }
 

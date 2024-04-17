@@ -1,8 +1,17 @@
+import 'dart:io';
+
+import 'package:ARGUS/models/location_service.dart';
+import 'package:ARGUS/models/user.dart';
 import 'package:ARGUS/partials/custom_button.dart';
 import 'package:ARGUS/utils.dart';
 import 'package:camera_camera/camera_camera.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:geolocator/geolocator.dart';
+import 'package:google_fonts/google_fonts.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
+
+import 'package:shared_preferences/shared_preferences.dart';
 
 class ReportPage extends StatefulWidget {
   const ReportPage({super.key});
@@ -12,7 +21,9 @@ class ReportPage extends StatefulWidget {
 }
 
 class _ReportPageState extends State<ReportPage> {
-  List images = [];
+  File? image;
+  String error = "";
+  String info = "";
   bool clicked = false;
 
   @override
@@ -20,36 +31,94 @@ class _ReportPageState extends State<ReportPage> {
     return Scaffold(
       body: Column(
         children: [
-          // ADD BUTTON
           const SizedBox(height: 30),
-          // _buildCamera(),
+          (error.isNotEmpty)
+              ? Container(
+                  width: 300,
+                  height: 50,
+                  decoration: BoxDecoration(
+                    border: Border.all(color: palette["green1"]!, width: 2),
+                    borderRadius: const BorderRadius.all(Radius.circular(15.0)),
+                    color: palette["green2"],
+                  ),
+                  child: Center(
+                    child: Text(
+                      error,
+                      textAlign: TextAlign.center,
+                      style:
+                          GoogleFonts.inder(fontSize: 20, color: Colors.white),
+                    ),
+                  ),
+                )
+              : const SizedBox(),
+          // ADD BUTTON
           const SizedBox(height: 10),
-          // LIST IMAGES
-          Container(
-            height: 150,
-            decoration: BoxDecoration(
-              border: Border.all(color: palette["green2"]!),
-            ),
-            width: MediaQuery.of(context).size.width * 0.95,
-            child: ListView.builder(
-              scrollDirection: Axis.horizontal,
-              itemCount: images.length,
-              itemBuilder: (context, index) {
-                Image img = kIsWeb
-                    ? Image.network(images[index].path)
-                    : Image.file(images[index], fit: BoxFit.fitHeight);
-                return Container(
-                  height: 150,
-                  width: 100,
-                  child: img,
-                );
-              },
-            ),
-          ),
+          _buildCamera(),
+          const SizedBox(height: 10),
+          (info.isNotEmpty)
+              ? Container(
+                  width: 300,
+                  height: 50,
+                  decoration: BoxDecoration(
+                    border: Border.all(color: palette["green1"]!, width: 2),
+                    borderRadius: const BorderRadius.all(Radius.circular(15.0)),
+                    color: palette["green2"],
+                  ),
+                  child: Center(
+                    child: Text(
+                      info,
+                      textAlign: TextAlign.center,
+                      style:
+                          GoogleFonts.inder(fontSize: 20, color: Colors.white),
+                    ),
+                  ),
+                )
+              : const SizedBox(),
           const SizedBox(height: 20),
           CustomButton(
             content: "ENVIAR",
-            onClick: () {},
+            onClick: () async {
+              final prefs = await SharedPreferences.getInstance();
+              if (prefs.getString("user") != null) {
+                User user = User.fromJson(prefs.getString("user")!);
+                LocationService service = LocationService();
+                Position position = await service.determinePosition();
+                try {
+                  if (image != null) {
+                    Map<String, dynamic> formData = {
+                      'id': user.id.toString(),
+                      'lat': position.latitude.toString(),
+                      'lng': position.longitude.toString(),
+                      'image': base64Encode(image!.readAsBytesSync())
+                    };
+                    http.Response response = await http
+                        .post(Uri.parse("$baseUrl/submit"), body: formData);
+                    if (response.statusCode == 200) {
+                      setState(() {
+                        info = "Report uploaded successfully";
+                        error = "";
+                      });
+                    } else {
+                      setState(() {
+                        error = "Error uploading report";
+                        info = "";
+                      });
+                    }
+                  } else {
+                    setState(() {
+                      error = "Image must not be null";
+                      info = "";
+                    });
+                  }
+                } catch (e) {
+                  print(e);
+                  setState(() {
+                    error = "Failed to send report: ${e.toString()}";
+                    info = "";
+                  });
+                }
+              }
+            },
           )
         ],
       ),
@@ -72,17 +141,19 @@ class _ReportPageState extends State<ReportPage> {
         ),
         height: MediaQuery.of(context).size.height * 0.6,
         width: MediaQuery.of(context).size.width,
-        child: const Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            Icon(
-              Icons.camera_enhance,
-              size: 128,
-            ),
-            Text("Clique para adicionar photos")
-          ],
-        ),
+        child: (image != null)
+            ? Image.file(image!)
+            : const Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Icon(
+                    Icons.camera_enhance,
+                    size: 128,
+                  ),
+                  Text("Clique para adicionar photos")
+                ],
+              ),
       ),
     );
   }
@@ -93,7 +164,9 @@ class _ReportPageState extends State<ReportPage> {
       MaterialPageRoute(
         builder: (_) => CameraCamera(
           onFile: (file) {
-            images.add(file);
+            image = file;
+            error = "";
+            info = "";
             Navigator.pop(context);
             setState(() {});
           },

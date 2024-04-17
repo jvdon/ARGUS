@@ -5,12 +5,11 @@ class User {
   int id;
   String username;
   String email;
-  String password;
   User({
     required this.id,
     required this.username,
     required this.email,
-    required this.password,
+
   });
 
   User copyWith({
@@ -23,7 +22,6 @@ class User {
       id: id ?? this.id,
       username: username ?? this.username,
       email: email ?? this.email,
-      password: password ?? this.password,
     );
   }
 
@@ -32,7 +30,6 @@ class User {
       'id': id,
       'username': username,
       'email': email,
-      'password': password,
     };
   }
 
@@ -41,7 +38,6 @@ class User {
       id: map['id'] as int,
       username: map['username'] as String,
       email: map['email'] as String,
-      password: map['password'] as String,
     );
   }
 
@@ -52,11 +48,11 @@ class User {
 
   @override
   String toString() {
-    return 'User(id: $id, username: $username, email: $email, password: $password)';
+    return 'User(id: $id, username: $username, email: $email)';
   }
 
   @override
   int get hashCode {
-    return id.hashCode ^ username.hashCode ^ email.hashCode ^ password.hashCode;
+    return id.hashCode ^ username.hashCode ^ email.hashCode;
   }
 }

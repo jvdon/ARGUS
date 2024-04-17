@@ -1,5 +1,6 @@
 import 'package:ARGUS/partials/custom_button.dart';
 import 'package:ARGUS/partials/custom_input.dart';
+import 'package:ARGUS/repos/user_repo.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
@@ -11,16 +12,19 @@ class SignupPage extends StatefulWidget {
 }
 
 class _SignupPageState extends State<SignupPage> {
+  GlobalKey<FormState> key = GlobalKey();
+
   TextEditingController username = TextEditingController();
   TextEditingController email = TextEditingController();
   TextEditingController password = TextEditingController();
   TextEditingController rePassword = TextEditingController();
-  
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(),
       body: Form(
+        key: key,
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
@@ -64,7 +68,16 @@ class _SignupPageState extends State<SignupPage> {
             ),
             CustomButton(
               content: "SIGN-UP",
-              onClick: () {},
+              onClick: () async {
+                if (key.currentState!.validate()) {
+                  UserRepo repo = UserRepo();
+                  bool loggedIn = await repo.register(
+                      username.text, email.text, password.text);
+                  if (loggedIn) {
+                    Navigator.of(context).pushReplacementNamed("/app");
+                  }
+                }
+              },
             )
           ],
         ),

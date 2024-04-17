@@ -35,6 +35,11 @@ class CustomInput extends StatelessWidget {
             decoration: InputDecoration(
               counterText: "",
               border: InputBorder.none,
+              errorMaxLines: 1,
+              errorStyle: GoogleFonts.inder(
+                color: palette["red"]!.withAlpha(255),
+                fontSize: 16,
+              ),
               label: Center(
                 child: Text(
                   label,

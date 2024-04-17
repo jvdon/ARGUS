@@ -39,6 +39,6 @@ class Trash {
 
   @override
   String toString() {
-    return '(Latitude: $lat, Longitude: $lng)';
+    return '$lat,$lng';
   }
 }

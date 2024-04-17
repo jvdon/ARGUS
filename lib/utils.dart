@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-String baseUrl = "http://192.168.15.177:5000";
+String baseUrl = "http://10.3.23.15:5000";
 
 Color fromHex(String hexString) {
   final buffer = StringBuffer();

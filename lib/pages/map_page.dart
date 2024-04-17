@@ -1,9 +1,11 @@
 import 'package:ARGUS/models/report.dart';
+import 'package:ARGUS/partials/custom_button.dart';
 import 'package:ARGUS/repos/report_repo.dart';
 import 'package:ARGUS/utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class MapPage extends StatefulWidget {
   const MapPage({super.key});
@@ -61,7 +63,24 @@ class _MapPageState extends State<MapPage> {
                                             child: Image.network(
                                                 "$baseUrl/${e.image_url!}"),
                                           ),
-                                          Text(e.toString())
+                                          Text(e.toString()),
+                                          CustomButton(
+                                            content: "Click to view on Maps",
+                                            onClick: () async {
+                                              String query = Uri.encodeFull(
+                                                  "http://maps.google.com/maps?z=12&t=m&q=loc:${e.lat}+${e.lng}");
+                                              print(query);
+                                              final Uri url = Uri.parse(query);
+                                              try {
+                                                if (!await launchUrl(url)) {
+                                                  throw Exception(
+                                                      'Could not launch $url');
+                                                }
+                                              } catch (e) {
+                                                print(e);
+                                              }
+                                            },
+                                          )
                                         ],
                                       ),
                                     ),

@@ -25,6 +25,7 @@ class _ReportPageState extends State<ReportPage> {
   String error = "";
   String info = "";
   bool clicked = false;
+  bool loading = false;
 
   @override
   Widget build(BuildContext context) {
@@ -75,9 +76,19 @@ class _ReportPageState extends State<ReportPage> {
                 )
               : const SizedBox(),
           const SizedBox(height: 20),
+          (loading)
+              ? CircularProgressIndicator(
+                  color: palette["green2"]!,
+                )
+              : SizedBox(),
+          const SizedBox(height: 20),
           CustomButton(
             content: "ENVIAR",
             onClick: () async {
+              setState(() {
+                loading = true;
+              });
+
               final prefs = await SharedPreferences.getInstance();
               if (prefs.getString("user") != null) {
                 User user = User.fromJson(prefs.getString("user")!);
@@ -97,17 +108,20 @@ class _ReportPageState extends State<ReportPage> {
                       setState(() {
                         info = "Report uploaded successfully";
                         error = "";
+                        loading = false;
                       });
                     } else {
                       setState(() {
                         error = "Error uploading report";
                         info = "";
+                        loading = false;
                       });
                     }
                   } else {
                     setState(() {
                       error = "Image must not be null";
                       info = "";
+                      loading = false;
                     });
                   }
                 } catch (e) {
@@ -115,6 +129,7 @@ class _ReportPageState extends State<ReportPage> {
                   setState(() {
                     error = "Failed to send report: ${e.toString()}";
                     info = "";
+                    loading = false;
                   });
                 }
               }

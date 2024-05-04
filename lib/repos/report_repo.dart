@@ -18,8 +18,6 @@ class ReportRepo {
     http.Response response = await http.get(Uri.parse("$baseUrl/trash/all"));
     List<Report> reports = [];
 
-    print(response.body.runtimeType);
-
     Iterable l = json.decode(response.body);
     reports = List<Report>.from(l.map((model) => Report.fromMap(model)));
 

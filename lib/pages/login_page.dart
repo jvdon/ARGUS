@@ -78,7 +78,6 @@ class _LoginPageState extends State<LoginPage> {
                 if (key.currentState!.validate()) {
                   UserRepo repo = UserRepo();
                   bool loggedIn = await repo.login(email.text, password.text);
-                  print(loggedIn);
                   if (loggedIn) {
                     Navigator.of(context).pushReplacementNamed("/app");
                   } else {

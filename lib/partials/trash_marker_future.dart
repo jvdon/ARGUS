@@ -6,9 +6,9 @@ import 'package:flutter_map/flutter_map.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:latlong2/latlong.dart';
 
-class CustomMarkerFuture extends StatelessWidget {
+class TrashMarkerFuture extends StatelessWidget {
   final Future<List<Report>> future;
-  const CustomMarkerFuture({
+  const TrashMarkerFuture({
     super.key,
     required this.future,
   });
@@ -24,7 +24,7 @@ class CustomMarkerFuture extends StatelessWidget {
               child: Column(
                 children: [
                   CircularProgressIndicator(),
-                  Text("Waiting on gps position")
+                  Text("Loading reports")
                 ],
               ),
             );
@@ -56,7 +56,6 @@ class CustomMarkerFuture extends StatelessWidget {
                                         onClick: () async {
                                           String query = Uri.encodeFull(
                                               "http://maps.google.com/maps?z=12&t=m&q=loc:${e.lat}+${e.lng}");
-                                          print(query);
                                           final Uri url = Uri.parse(query);
                                           try {
                                             if (!await launchUrl(url)) {

@@ -5,23 +5,27 @@ class User {
   int id;
   String username;
   String email;
+  bool empresa;
+
   User({
     required this.id,
     required this.username,
     required this.email,
-
+    required this.empresa,
   });
+  
 
   User copyWith({
     int? id,
     String? username,
     String? email,
-    String? password,
+    bool? empresa,
   }) {
     return User(
       id: id ?? this.id,
       username: username ?? this.username,
       email: email ?? this.email,
+      empresa: empresa ?? this.empresa,
     );
   }
 
@@ -30,6 +34,7 @@ class User {
       'id': id,
       'username': username,
       'email': email,
+      'empresa': empresa,
     };
   }
 
@@ -38,21 +43,16 @@ class User {
       id: map['id'] as int,
       username: map['username'] as String,
       email: map['email'] as String,
+      empresa: ((map['empresa'] == 1) ? true : false),
     );
   }
 
   String toJson() => json.encode(toMap());
 
-  factory User.fromJson(String source) =>
-      User.fromMap(json.decode(source) as Map<String, dynamic>);
+  factory User.fromJson(String source) => User.fromMap(json.decode(source) as Map<String, dynamic>);
 
   @override
   String toString() {
-    return 'User(id: $id, username: $username, email: $email)';
-  }
-
-  @override
-  int get hashCode {
-    return id.hashCode ^ username.hashCode ^ email.hashCode;
+    return 'User(id: $id, username: $username, email: $email, empresa: $empresa)';
   }
 }

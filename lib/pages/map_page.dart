@@ -1,12 +1,12 @@
-import 'package:ARGUS/models/report.dart';
-import 'package:ARGUS/partials/custom_button.dart';
-import 'package:ARGUS/partials/custom_marker_future.dart';
+import 'package:ARGUS/models/user.dart';
+import 'package:ARGUS/partials/dropout_marker_future.dart';
+import 'package:ARGUS/partials/trash_marker_future.dart';
+import 'package:ARGUS/repos/dropout_repo.dart';
 import 'package:ARGUS/repos/report_repo.dart';
-import 'package:ARGUS/utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
-import 'package:url_launcher/url_launcher.dart';
 import 'package:latlong2/latlong.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class MapPage extends StatefulWidget {
   const MapPage({super.key});
@@ -18,20 +18,55 @@ class MapPage extends StatefulWidget {
 class _MapPageState extends State<MapPage> {
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: FlutterMap(
-        options: const MapOptions(
-          initialCenter: LatLng(37.4219983, -122.084),
-        ),
-        children: [
-          TileLayer(
-            urlTemplate: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
-            tileBuilder: _darkModeTileBuilder,
-            userAgentPackageName: 'com.zeyk.Gs',
-          ),
-          CustomMarkerFuture(future: ReportRepo().getReports()),
-        ],
-      ),
+    return FutureBuilder(
+      future: SharedPreferences.getInstance(),
+      builder: (context, snapshot) {
+        switch (snapshot.connectionState) {
+          case ConnectionState.done:
+            if (snapshot.hasError) {
+              return const Center(
+                child: Column(
+                  children: [Icon(Icons.error), Text("Failed to load user")],
+                ),
+              );
+            } else {
+              SharedPreferences preferences = snapshot.data!;
+              User user = User.fromJson(preferences.getString("user")!);
+
+              return Scaffold(
+                body: FlutterMap(
+                  options: const MapOptions(
+                    initialCenter: LatLng(37.4219983, -122.084),
+                  ),
+                  children: [
+                    TileLayer(
+                      urlTemplate:
+                          'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
+                      tileBuilder: _darkModeTileBuilder,
+                      userAgentPackageName: 'com.zeyk.Gs',
+                    ),
+                    (user.empresa)
+                        ? TrashMarkerFuture(future: ReportRepo().getReports())
+                        : DropoutMarkerFuture(
+                            future: DropoutRepo().getDropouts())
+                  ],
+                ),
+              );
+            }
+          case ConnectionState.waiting:
+            return const Center(
+              child: Column(
+                children: [CircularProgressIndicator(), Text("Loading user")],
+              ),
+            );
+          default:
+            return const Center(
+              child: Column(
+                children: [Icon(Icons.question_mark), Text("Unknown")],
+              ),
+            );
+        }
+      },
     );
   }
 }

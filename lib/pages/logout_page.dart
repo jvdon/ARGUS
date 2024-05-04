@@ -29,7 +29,6 @@ class _LogoutPageState extends State<LogoutPage> {
                 await preferences.remove("user");
 
                 Navigator.of(context).pushReplacementNamed("/welcome");
-                print('Timer is done!');
               },
             ),
           ],

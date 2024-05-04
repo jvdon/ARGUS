@@ -103,7 +103,7 @@ class _ReportPageState extends State<ReportPage> {
                       'image': base64Encode(image!.readAsBytesSync())
                     };
                     http.Response response = await http
-                        .post(Uri.parse("$baseUrl/submit"), body: formData);
+                        .post(Uri.parse("$baseUrl/trash/submit"), body: formData);
                     if (response.statusCode == 200) {
                       setState(() {
                         info = "Report uploaded successfully";
@@ -132,7 +132,7 @@ class _ReportPageState extends State<ReportPage> {
                     loading = false;
                   });
                 }
-              }
+              } else {}
             },
           )
         ],

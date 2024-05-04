@@ -45,6 +45,7 @@ dependencies:
   geolocator: ^11.0.0 
   timer_count_down: ^2.2.2
   url_launcher: ^6.1.11
+  lucide_icons: ^0.257.0
 
 dev_dependencies:
   flutter_test:

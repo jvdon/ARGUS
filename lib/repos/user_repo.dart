@@ -23,11 +23,13 @@ class UserRepo {
     return (response.statusCode == 200);
   }
 
-  Future<bool> register(String name, String email, String password) async {
+  Future<bool> register(
+      String name, String email, bool empresa, String password) async {
     http.Response response = await http.post(
       Uri.parse("$baseUrl/register"),
       body: {
         "username": name,
+        "empresa": empresa.toString(),
         "email": email,
         "password": password,
       },

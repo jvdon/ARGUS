@@ -20,40 +20,44 @@ class CustomInput extends StatelessWidget {
       child: Container(
         width: 300,
         height: 50,
-        decoration: BoxDecoration(
-          border: Border.all(color: palette["green2"]!, width: 2),
-          borderRadius: const BorderRadius.all(Radius.circular(15.0)),
-          color: palette["green3"],
-        ),
         padding: const EdgeInsets.all(5),
-        child: Center(
-          child: TextFormField(
-            cursorColor: Colors.white,
-            maxLength: 40,
-            autocorrect: true,
-            style: GoogleFonts.inder(color: palette["white"], fontSize: 16),
-            decoration: InputDecoration(
-              counterText: "",
-              border: InputBorder.none,
-              errorMaxLines: 1,
+        decoration: BoxDecoration(
+            border: Border.all(color: palette["green2"]!, width: 2),
+            borderRadius: const BorderRadius.all(Radius.circular(15)),
+            color: palette["green3"]),
+        child: TextFormField(
+          keyboardType: type,
+          obscureText: (type == TextInputType.visiblePassword),
+          validator: (value) {
+            if (type == TextInputType.visiblePassword) {
+              RegExp regExp = RegExp(
+                  r'^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,}$');
+              if (value == null || value.isEmpty || !regExp.hasMatch(value)) {
+                return "Senha invalida";
+              } else {
+                return null;
+              }
+            }
+
+            if (value == null || value.isEmpty) {
+              return "Campo Obrigatório";
+            } else {
+              return null;
+            }
+          },
+          controller: controller,
+          cursorColor: Colors.white,
+          decoration: InputDecoration(
+              alignLabelWithHint: true,
               errorStyle: GoogleFonts.inder(
-                color: palette["red"]!.withAlpha(255),
-                fontSize: 16,
+                  color: palette["red"], fontSize: 12, height: 0.2),
+              hintText: label,
+              border: InputBorder.none,
+              hintStyle: GoogleFonts.inder(
+                color: Colors.white,
               ),
-              label: Center(
-                child: Text(
-                  label,
-                  maxLines: 1,
-                  style: GoogleFonts.inder(
-                      color: palette["white"]!.withAlpha(150), fontSize: 16),
-                ),
-              ),
-            ),
-            controller: controller,
-            keyboardType: type,
-            validator: (value) =>
-                (value == null || value.isEmpty) ? "Campo obrigatório" : null,
-          ),
+              floatingLabelAlignment: FloatingLabelAlignment.center),
+          style: GoogleFonts.inder(color: palette["white"], fontSize: 14),
         ),
       ),
     );

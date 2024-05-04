@@ -1,6 +1,7 @@
 import 'package:ARGUS/partials/custom_button.dart';
 import 'package:ARGUS/partials/custom_input.dart';
 import 'package:ARGUS/repos/user_repo.dart';
+import 'package:ARGUS/utils.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
@@ -16,8 +17,20 @@ class _SignupPageState extends State<SignupPage> {
 
   TextEditingController username = TextEditingController();
   TextEditingController email = TextEditingController();
+  bool empresa = false;
+
   TextEditingController password = TextEditingController();
   TextEditingController rePassword = TextEditingController();
+
+  final MaterialStateProperty<Icon?> thumbIcon =
+      MaterialStateProperty.resolveWith<Icon?>(
+    (Set<MaterialState> states) {
+      if (states.contains(MaterialState.selected)) {
+        return const Icon(Icons.check);
+      }
+      return const Icon(Icons.close);
+    },
+  );
 
   @override
   Widget build(BuildContext context) {
@@ -55,6 +68,7 @@ class _SignupPageState extends State<SignupPage> {
             CustomInput(
               label: "PASSWORD",
               controller: password,
+              type: TextInputType.visiblePassword,
             ),
             const SizedBox(
               height: 10,
@@ -62,6 +76,30 @@ class _SignupPageState extends State<SignupPage> {
             CustomInput(
               label: "CONFIRM PASSWORD",
               controller: rePassword,
+              type: TextInputType.visiblePassword,
+            ),
+            const SizedBox(
+              height: 10,
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text(
+                  "Empresa",
+                  style: GoogleFonts.inder(fontSize: 24, color: Colors.white),
+                ),
+                Switch(
+                  value: empresa,
+                  thumbIcon: thumbIcon,
+                  activeColor: palette["green3"],
+                  inactiveThumbColor: palette["red"],
+                  onChanged: (value) {
+                    setState(() {
+                      empresa = value;
+                    });
+                  },
+                ),
+              ],
             ),
             const SizedBox(
               height: 10,
@@ -72,7 +110,7 @@ class _SignupPageState extends State<SignupPage> {
                 if (key.currentState!.validate()) {
                   UserRepo repo = UserRepo();
                   bool loggedIn = await repo.register(
-                      username.text, email.text, password.text);
+                      username.text, email.text, empresa, password.text);
                   if (loggedIn) {
                     Navigator.of(context).pushReplacementNamed("/app");
                   }
